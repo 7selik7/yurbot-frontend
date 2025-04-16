@@ -2,15 +2,42 @@
 
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { ReactNode } from 'react';
+import { ReactNode, useEffect } from 'react';
+import { getUserDataRequest } from '@/lib/auth';
+import { setUser } from '@/store/slices/userSlice';
+// import { useAppDispatch } from '@/store/hook';
 
 export default function ProtectedLayout({ children }: { children: ReactNode }) {
   const router = useRouter();
+  // const dispatch = useAppDispatch();
 
   const handleLogout = () => {
     localStorage.removeItem('token');
     router.replace('/login');
   };
+
+  const getUserData = async () => {
+    const accessToken = localStorage.getItem('accessToken');
+    if (!accessToken) {
+      router.replace('/login');
+      return;
+    }
+
+    await getUserDataRequest(
+      (res) => {
+        // dispatch(setUser(res));
+        // router.replace('/profile');
+      },
+      (err) => {
+        // const msg = (err as { message: string })?.message || 'Login failed';
+        // console.error('Login error:', msg);
+      },
+    );
+  };
+
+  useEffect(() => {
+    getUserData();
+  }, []);
 
   return (
     <div className="flex min-h-screen">

@@ -3,7 +3,7 @@
 import { Formik, Form, Field, ErrorMessage, FormikHelpers } from 'formik';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
-import { authLogin } from '@/lib/auth';
+import { authLoginRequest } from '@/lib/auth';
 import { LoginSchema } from '@/validations/auth.schema';
 
 export default function LoginForm() {
@@ -17,10 +17,11 @@ export default function LoginForm() {
     const { setSubmitting } = helpers;
     setServerError(null);
 
-    await authLogin(
+    await authLoginRequest(
       values,
       (res) => {
-        localStorage.setItem('access_token', res.access_token);
+        localStorage.setItem('accessToken', res.accessToken);
+        localStorage.setItem('refreshToken', res.refreshToken);
         router.replace('/profile');
       },
       (err) => {

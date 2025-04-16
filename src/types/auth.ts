@@ -1,4 +1,16 @@
 export interface LoginResponse {
-  access_token: string;
-  refresh_token: string;
+  accessToken: string;
+  refreshToken: string;
+}
+
+export interface UserDataResponse {
+  uuid: string;
+  email: string;
+  firstName: string | null;
+  lastName: string | null;
+  avatarUrl: string | null;
+  isFirstLogin: boolean;
+  isConfirmed: boolean;
+  createdAt: string;
+  updatedAt: string;
 }
