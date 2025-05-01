@@ -8,8 +8,8 @@ import { Message } from '@/types/message';
 
 interface IChatMessageProps {
   message: Message;
-  handleSendClick: () => void;
-  handleRegenerateClick: () => void;
+  handleSendClick: (parentUuid: string, text: string) => void;
+  handleRegenerateClick: (messageUuid: string) => void;
 }
 
 const ChatMessage: React.FC<IChatMessageProps> = ({
@@ -29,8 +29,7 @@ const ChatMessage: React.FC<IChatMessageProps> = ({
     setIsEditing(false);
   };
   const handleEditConfirm = () => {
-    // handleSendClick(editedText);
-    console.log('Edit confirm');
+    handleSendClick(message.parentUuid ?? '', editedText);
     setIsEditing(false);
   };
 

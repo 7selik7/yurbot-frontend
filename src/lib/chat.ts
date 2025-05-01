@@ -1,5 +1,12 @@
 import { axiosInstance } from '@/lib/instance';
-import { CreateChatData, FullChat, SendMessageData, SendMessageResponse } from '@/types/chat';
+import {
+  CreateChatData,
+  FullChat,
+  RegenerateMessageData,
+  RegenerateMessageResponse,
+  SendMessageData,
+  SendMessageResponse,
+} from '@/types/chat';
 import { Message } from '@/types/message';
 
 export const getUserChatsRequest = async (
@@ -42,6 +49,17 @@ export const createChatRequest = async (createChatData: CreateChatData) => {
 export const sendMessageRequest = async (sendMessageData: SendMessageData) => {
   try {
     return await axiosInstance.post<SendMessageResponse>(`/chats/send_message`, sendMessageData);
+  } catch (e) {
+    throw e;
+  }
+};
+
+export const regenerateMessageRequest = async (regenerateMessageData: RegenerateMessageData) => {
+  try {
+    return await axiosInstance.post<RegenerateMessageResponse>(
+      `/chats/regenerate_message`,
+      regenerateMessageData,
+    );
   } catch (e) {
     throw e;
   }

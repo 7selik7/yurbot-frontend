@@ -1,24 +1,27 @@
 'use client';
 
 import { useAppDispatch } from '@/store/hook';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { Message } from '@/types/message';
 import ChatMessage from '@/components/chat/ChatMessage';
 import { setLastMessageUuid } from '@/store/slices/chatSlice';
 
 interface IChatMessageTreeProps {
   messages: Message[];
-  handleSendClick: () => void;
-  handleRegenerateClick: () => void;
+  handleSendClick: (parentUuid: string, text: string) => void;
+  handleRegenerateClick: (messageUuid: string) => void;
+  selectedChildIndices: Record<string, number>;
+  setSelectedChildIndices: React.Dispatch<React.SetStateAction<Record<string, number>>>;
 }
 
 const ChatMessagesTree: React.FC<IChatMessageTreeProps> = ({
   messages,
   handleSendClick,
   handleRegenerateClick,
+  selectedChildIndices,
+  setSelectedChildIndices,
 }) => {
   const dispatch = useAppDispatch();
-  const [selectedChildIndices, setSelectedChildIndices] = useState<Record<string, number>>({});
 
   const buildMessageBranch = (): Message[] => {
     const branch: Message[] = [];
@@ -78,69 +81,60 @@ const ChatMessagesTree: React.FC<IChatMessageTreeProps> = ({
     setSelectedChildIndices({});
   }, []);
 
-  return (
-    <div className="p-4 space-y-4 overflow-y-auto">
-      {messagesBranch.map((message) => (
-        <div key={message.uuid}>
-          <ChatMessage
-            key={message.uuid}
-            message={message}
-            handleSendClick={handleSendClick}
-            handleRegenerateClick={handleRegenerateClick}
-          />
-          {message.children && message.children.length > 1 && (
-            <div className="flex flex-row items-center justify-center w-full max-w-[768px] mx-auto mb-2 gap-2">
-              <button
-                onClick={() => handleChildSelect(message.uuid, 'prev')}
-                disabled={(selectedChildIndices[message.uuid] || 0) === 0}
-                className="p-1 rounded-md hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="w-5 h-5"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M15 19l-7-7 7-7"
-                  />
-                </svg>
-              </button>
+  return messagesBranch.map((message) => (
+    <div key={message.uuid}>
+      <ChatMessage
+        key={message.uuid}
+        message={message}
+        handleSendClick={handleSendClick}
+        handleRegenerateClick={handleRegenerateClick}
+      />
+      {message.children && message.children.length > 1 && (
+        <div className="flex flex-row items-center justify-center w-full max-w-[768px] mx-auto mb-2 gap-2">
+          <button
+            onClick={() => handleChildSelect(message.uuid, 'prev')}
+            disabled={(selectedChildIndices[message.uuid] || 0) === 0}
+            className="p-1 rounded-md hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="w-5 h-5"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M15 19l-7-7 7-7"
+              />
+            </svg>
+          </button>
 
-              <span className="text-sm">
-                {(selectedChildIndices[message.uuid] || 0) + 1} / {message.children.length}
-              </span>
+          <span className="text-sm">
+            {(selectedChildIndices[message.uuid] || 0) + 1} / {message.children.length}
+          </span>
 
-              <button
-                onClick={() => handleChildSelect(message.uuid, 'next')}
-                disabled={(selectedChildIndices[message.uuid] || 0) === message.children.length - 1}
-                className="p-1 rounded-md hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="w-5 h-5"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M9 5l7 7-7 7"
-                  />
-                </svg>
-              </button>
-            </div>
-          )}
+          <button
+            onClick={() => handleChildSelect(message.uuid, 'next')}
+            disabled={(selectedChildIndices[message.uuid] || 0) === message.children.length - 1}
+            className="p-1 rounded-md hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="w-5 h-5"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+            </svg>
+          </button>
         </div>
-      ))}
+      )}
     </div>
-  );
+  ));
 };
 
 export default ChatMessagesTree;

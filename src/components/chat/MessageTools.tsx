@@ -17,7 +17,7 @@ interface IMessageToolsProps {
   message: Message;
   isVisible: boolean;
   handleEditStart: () => void;
-  handleRegenerateClick: () => void;
+  handleRegenerateClick: (messageUuid: string) => void;
   hideMessageTools: () => void;
   isNowGenerating: boolean;
   isLoading: boolean;
@@ -27,6 +27,7 @@ const MessageTools: React.FC<IMessageToolsProps> = ({
   message,
   isVisible,
   handleEditStart,
+  handleRegenerateClick,
   hideMessageTools,
   isNowGenerating,
   isLoading,
@@ -43,7 +44,7 @@ const MessageTools: React.FC<IMessageToolsProps> = ({
   };
 
   const regenerateClick = () => {
-    console.log('Regenerate click');
+    handleRegenerateClick(message.uuid);
   };
 
   const handleOptionClick = () => {

@@ -53,6 +53,26 @@ const chatSlice = createSlice({
         }
       }
     },
+    removeMessage(state, action: PayloadAction<string>) {
+      const messageToRemoveUuid = action.payload;
+
+      const chat = state.chats.find((chat) =>
+        chat.messages?.some((m) => m.uuid === messageToRemoveUuid),
+      );
+      if (!chat) return;
+
+      const messageToRemove = chat.messages.find((m) => m.uuid === messageToRemoveUuid);
+      if (!messageToRemove) return;
+
+      chat.messages = chat.messages.filter((m) => m.uuid !== messageToRemoveUuid);
+
+      if (messageToRemove.parentUuid) {
+        const parent = chat.messages.find((m) => m.uuid === messageToRemove.parentUuid);
+        if (parent && parent.children) {
+          parent.children = parent.children.filter((uuid) => uuid !== messageToRemoveUuid);
+        }
+      }
+    },
     setSelectedChat(state, action: PayloadAction<FullChat | null>) {
       state.selectedChat = action.payload;
     },
@@ -62,6 +82,6 @@ const chatSlice = createSlice({
   },
 });
 
-export const { setChats, setSelectedChat, addChat, setLastMessageUuid, addMessage } =
+export const { setChats, setSelectedChat, addChat, setLastMessageUuid, addMessage, removeMessage } =
   chatSlice.actions;
 export default chatSlice.reducer;

@@ -23,11 +23,20 @@ export interface SendMessageData {
   text: string;
 }
 
+export interface RegenerateMessageData {
+  chat_uuid: string;
+  message_uuid: string;
+}
+
 export interface CreateChatData {
   message: string;
 }
 
 export interface SendMessageResponse {
   message: Message;
+  answer: Message;
+}
+
+export interface RegenerateMessageResponse {
   answer: Message;
 }
