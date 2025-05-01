@@ -1,10 +1,5 @@
 import { axiosInstance } from '@/lib/instance';
-import { LoginResponse, UserDataResponse } from '@/types/auth';
-
-interface LoginData {
-  email: string;
-  password: string;
-}
+import { LoginData, LoginResponse, UserDataResponse } from '@/types/auth';
 
 export const authLoginRequest = async (
   loginData: LoginData,

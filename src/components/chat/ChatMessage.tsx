@@ -34,7 +34,7 @@ const ChatMessage: React.FC<IChatMessageProps> = ({
     setIsEditing(false);
   };
 
-  if (message.parent_uuid === null) {
+  if (message.parentUuid === null) {
     return null;
   }
 

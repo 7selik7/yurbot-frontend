@@ -76,7 +76,7 @@ export default function ProtectedLayout({ children }: { children: ReactNode }) {
         </div>
       </aside>
 
-      <main className="flex-1 bg-gray-100 p-6">{children}</main>
+      <main className="flex-1 bg-gray-100 p-0">{children}</main>
     </div>
   );
 }

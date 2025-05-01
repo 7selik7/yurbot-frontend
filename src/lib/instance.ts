@@ -40,6 +40,17 @@ async function tryRefreshToken(originalRequest: any) {
   }
 }
 
+axiosInstance.interceptors.request.use(
+  (req) => {
+    const token = localStorage.getItem('accessToken');
+    if (token) {
+      req.headers.Authorization = `Bearer ${token}`;
+    }
+    return req;
+  },
+  (error) => Promise.reject(error),
+);
+
 axiosInstance.interceptors.response.use(
   (res) => {
     res.data = toCamelCase(res.data);

@@ -4,6 +4,7 @@ import { useAppDispatch } from '@/store/hook';
 import React, { useEffect, useState } from 'react';
 import { Message } from '@/types/message';
 import ChatMessage from '@/components/chat/ChatMessage';
+import { setLastMessageUuid } from '@/store/slices/chatSlice';
 
 interface IChatMessageTreeProps {
   messages: Message[];
@@ -21,7 +22,7 @@ const ChatMessagesTree: React.FC<IChatMessageTreeProps> = ({
 
   const buildMessageBranch = (): Message[] => {
     const branch: Message[] = [];
-    const rootMessage = messages.find((m) => m.parent_uuid === null);
+    const rootMessage = messages.find((m) => m.parentUuid === null);
 
     if (!rootMessage) {
       return branch;
@@ -69,8 +70,7 @@ const ChatMessagesTree: React.FC<IChatMessageTreeProps> = ({
   useEffect(() => {
     if (messagesBranch.length > 0) {
       const lastMessage = messagesBranch[messagesBranch.length - 1];
-      console.log(lastMessage);
-      // dispatch(setLastMessage(lastMessage));
+      dispatch(setLastMessageUuid(lastMessage.uuid));
     }
   }, [messagesBranch, dispatch]);
 

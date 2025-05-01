@@ -3,9 +3,9 @@ export interface Message {
   text: string;
   mark: 'none' | 'like' | 'dislike';
   author: 'user' | 'ai';
-  parent_uuid: string | null;
-  chat_uuid: string;
+  parentUuid: string | null;
+  chatUuid: string;
   children: string[];
-  created_at: string;
-  updated_at: string;
+  createdAt: string;
+  updatedAt: string;
 }
