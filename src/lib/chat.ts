@@ -2,10 +2,12 @@ import { axiosInstance } from '@/lib/instance';
 import {
   CreateChatData,
   FullChat,
+  MarkMessageData,
   RegenerateMessageData,
   RegenerateMessageResponse,
   SendMessageData,
   SendMessageResponse,
+  UpdateChatTitleData,
 } from '@/types/chat';
 import { Message } from '@/types/message';
 
@@ -63,4 +65,51 @@ export const regenerateMessageRequest = async (regenerateMessageData: Regenerate
   } catch (e) {
     throw e;
   }
+};
+
+export const updateChatTitleRequest = async (
+  chatUuid: string,
+  updateChatTitleData: UpdateChatTitleData,
+  callback: () => void,
+  errorCallback: () => void,
+) => {
+  axiosInstance
+    .patch(`/chats/${chatUuid}/title`, updateChatTitleData)
+    .then(() => {
+      callback();
+    })
+    .catch(() => {
+      errorCallback();
+    });
+};
+
+export const markMessageRequest = async (
+  messageUuid: string,
+  markMessageData: MarkMessageData,
+  callback: () => void,
+  errorCallback: () => void,
+) => {
+  axiosInstance
+    .patch(`/chats/${messageUuid}/mark`, markMessageData)
+    .then(() => {
+      callback();
+    })
+    .catch(() => {
+      errorCallback();
+    });
+};
+
+export const deleteChatRequest = async (
+  chatUuid: string,
+  callback: () => void,
+  errorCallback: () => void,
+) => {
+  axiosInstance
+    .delete(`/chats/${chatUuid}`)
+    .then(() => {
+      callback();
+    })
+    .catch(() => {
+      errorCallback();
+    });
 };

@@ -2,16 +2,19 @@
 
 import React, { useState } from 'react';
 import {
+  ArrowPathIcon,
   CheckIcon,
   ClipboardIcon,
-  PencilSquareIcon,
-  HandThumbUpIcon,
-  HandThumbUpIcon as HandThumbUpOutline,
-  HandThumbDownIcon,
   HandThumbDownIcon as HandThumbDownOutline,
-  ArrowPathIcon,
+  HandThumbDownIcon,
+  HandThumbUpIcon as HandThumbUpOutline,
+  HandThumbUpIcon,
+  PencilSquareIcon,
 } from '@heroicons/react/24/solid';
-import { Message } from '@/types/message';
+import { MarkType, Message } from '@/types/message';
+import { markMessageRequest } from '@/lib/chat';
+import { useAppDispatch } from '@/store/hook';
+import { updateMessageMark } from '@/store/slices/chatSlice';
 
 interface IMessageToolsProps {
   message: Message;
@@ -32,6 +35,8 @@ const MessageTools: React.FC<IMessageToolsProps> = ({
   isNowGenerating,
   isLoading,
 }) => {
+  const dispatch = useAppDispatch();
+
   const [messageCopied, setMessageCopied] = useState(false);
   const [option, setOption] = useState(message.mark);
 
@@ -47,8 +52,24 @@ const MessageTools: React.FC<IMessageToolsProps> = ({
     handleRegenerateClick(message.uuid);
   };
 
-  const handleOptionClick = () => {
-    console.log('Update option');
+  const handleOptionClick = async (selected: MarkType) => {
+    const newMark = option === selected ? MarkType.NONE : selected;
+
+    await markMessageRequest(
+      message.uuid,
+      { mark: newMark },
+      () => {
+        setOption(newMark);
+        dispatch(
+          updateMessageMark({
+            messageUuid: message.uuid,
+            chatUuid: message.chatUuid,
+            mark: newMark,
+          }),
+        );
+      },
+      () => {},
+    );
   };
 
   if (!isVisible) {
@@ -86,11 +107,10 @@ const MessageTools: React.FC<IMessageToolsProps> = ({
         <>
           <button
             title="Like"
-            onClick={handleOptionClick}
+            onClick={() => handleOptionClick(MarkType.LIKE)}
             className="p-1 rounded-md hover:bg-gray-200 transition"
           >
-            {/*TODO add ENUM*/}
-            {option === 'like' ? (
+            {option === MarkType.LIKE ? (
               <HandThumbUpIcon className="w-4 h-4 text-blue-500" />
             ) : (
               <HandThumbUpOutline className="w-4 h-4" />
@@ -99,10 +119,10 @@ const MessageTools: React.FC<IMessageToolsProps> = ({
 
           <button
             title="Dislike"
-            onClick={handleOptionClick}
+            onClick={() => handleOptionClick(MarkType.DISLIKE)}
             className="p-1 rounded-md hover:bg-gray-200 transition"
           >
-            {option === 'dislike' ? (
+            {option === MarkType.DISLIKE ? (
               <HandThumbDownIcon className="w-4 h-4 text-red-500" />
             ) : (
               <HandThumbDownOutline className="w-4 h-4" />

@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { FullChat } from '@/types/chat';
-import { Message } from '@/types/message';
+import { MarkType, Message } from '@/types/message';
 
 interface ChatState {
   chats: FullChat[];
@@ -40,6 +40,8 @@ const chatSlice = createSlice({
 
       chat.messages.push(newMessage);
 
+      chat.updatedAt = newMessage.createdAt;
+
       if (newMessage.parentUuid) {
         const parent = chat.messages.find((m) => m.uuid === newMessage.parentUuid);
         if (parent) {
@@ -73,6 +75,35 @@ const chatSlice = createSlice({
         }
       }
     },
+    updateMessageMark(
+      state,
+      action: PayloadAction<{ messageUuid: string; chatUuid: string; mark: MarkType }>,
+    ) {
+      const { messageUuid, chatUuid, mark } = action.payload;
+
+      const chat = state.chats.find((chat) => chat.uuid === chatUuid);
+      if (!chat || !chat.messages) return;
+
+      const message = chat.messages.find((msg) => msg.uuid === messageUuid);
+      if (!message) return;
+
+      message.mark = mark;
+    },
+    updateChatTitle(state, action: PayloadAction<{ chatUuid: string; newTitle: string }>) {
+      const { chatUuid, newTitle } = action.payload;
+      const chat = state.chats.find((chat) => chat.uuid === chatUuid);
+      if (chat) {
+        chat.title = newTitle;
+      }
+    },
+    deleteChat(state, action: PayloadAction<string>) {
+      const chatUuid = action.payload;
+      state.chats = state.chats.filter((chat) => chat.uuid !== chatUuid);
+
+      if (state.selectedChat?.uuid === chatUuid) {
+        state.selectedChat = null;
+      }
+    },
     setSelectedChat(state, action: PayloadAction<FullChat | null>) {
       state.selectedChat = action.payload;
     },
@@ -82,6 +113,15 @@ const chatSlice = createSlice({
   },
 });
 
-export const { setChats, setSelectedChat, addChat, setLastMessageUuid, addMessage, removeMessage } =
-  chatSlice.actions;
+export const {
+  setChats,
+  setSelectedChat,
+  addChat,
+  setLastMessageUuid,
+  addMessage,
+  removeMessage,
+  updateMessageMark,
+  updateChatTitle,
+  deleteChat,
+} = chatSlice.actions;
 export default chatSlice.reducer;

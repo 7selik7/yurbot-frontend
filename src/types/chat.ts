@@ -1,4 +1,4 @@
-import { Message } from '@/types/message';
+import { MarkType, Message } from '@/types/message';
 
 export interface Chat {
   uuid: string;
@@ -30,6 +30,14 @@ export interface RegenerateMessageData {
 
 export interface CreateChatData {
   message: string;
+}
+
+export interface MarkMessageData {
+  mark: MarkType;
+}
+
+export interface UpdateChatTitleData {
+  new_title: string;
 }
 
 export interface SendMessageResponse {

@@ -26,24 +26,25 @@ const ChatsSidebar = () => {
   }, [chats]);
 
   return (
-    <div className="relative">
-      <div className="h-full bg-white border-r border-gray-200 shadow-md w-[300px] overflow-y-auto">
+    <div className="relative h-screen w-[300px] bg-white border-r border-gray-200 shadow-md flex flex-col">
+      <div className="shrink-0 sticky top-0 z-10 bg-white border-b border-gray-200 py-4 px-4">
         <button
           onClick={handleNewChat}
-          className="flex items-center justify-center w-[90%] mx-auto my-4 py-2 px-4 bg-blue-500 text-white text-sm font-semibold rounded-lg shadow-md hover:bg-blue-600 transition-all"
+          className="w-full py-2 px-4 bg-blue-500 text-white text-sm font-semibold rounded-lg shadow-md hover:bg-blue-600 transition-all"
         >
           + New Chat
         </button>
-        <div className="p-4 space-y-6">
-          {Object.entries(chatsToShow).map(([title, chats]) => (
-            <div key={title} className="space-y-1">
-              <div className="pl-2 text-left font-bold text-gray-700 text-sm">{title}</div>
-              {chats.map((chat) => (
-                <ChatItem chat={chat} key={chat.uuid} />
-              ))}
-            </div>
-          ))}
-        </div>
+      </div>
+
+      <div className="flex-1 overflow-y-auto px-4 py-2 space-y-6">
+        {Object.entries(chatsToShow).map(([title, chats]) => (
+          <div key={title} className="space-y-1">
+            <div className="pl-2 text-left font-bold text-gray-700 text-sm">{title}</div>
+            {chats.map((chat) => (
+              <ChatItem chat={chat} key={chat.uuid} />
+            ))}
+          </div>
+        ))}
       </div>
     </div>
   );
