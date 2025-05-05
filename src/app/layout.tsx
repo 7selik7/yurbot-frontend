@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import '@/styles/globals.css';
 import ReduxProvider from '@/providers/ReduxProvider';
 import MultiLanguageProvider from '@/providers/MultiLanguageProvider';
+import ThemeProvider from '@/providers/ThemeProvider';
 
 export const metadata: Metadata = {
   title: 'Create Next App',
@@ -17,7 +18,9 @@ export default function RootLayout({
     <html lang="en">
       <body>
         <ReduxProvider>
-          <MultiLanguageProvider>{children}</MultiLanguageProvider>
+          <ThemeProvider>
+            <MultiLanguageProvider>{children}</MultiLanguageProvider>
+          </ThemeProvider>
         </ReduxProvider>
       </body>
     </html>

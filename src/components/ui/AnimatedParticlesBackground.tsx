@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useRef } from 'react';
+import { useTheme } from '@/providers/ThemeProvider';
 
 interface Particle {
   x: number;
@@ -14,6 +15,7 @@ interface Particle {
 
 export default function AnimatedParticlesBackground() {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
+  const { theme } = useTheme();
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -21,6 +23,22 @@ export default function AnimatedParticlesBackground() {
 
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
+
+    const style = getComputedStyle(document.documentElement);
+    const isDark = document.documentElement.classList.contains('dark');
+
+    const baseColor = style
+      .getPropertyValue(isDark ? '--dark-particle-color' : '--particle-color')
+      .trim();
+    const highlightColor = style
+      .getPropertyValue(isDark ? '--dark-particle-highlight' : '--particle-highlight')
+      .trim();
+    const bgTop = style
+      .getPropertyValue(isDark ? '--dark-particle-bg-top' : '--particle-bg-top')
+      .trim();
+    const bgBottom = style
+      .getPropertyValue(isDark ? '--dark-particle-bg-bottom' : '--particle-bg-bottom')
+      .trim();
 
     let particles: Particle[] = [];
     let animationFrameId: number;
@@ -50,9 +68,9 @@ export default function AnimatedParticlesBackground() {
           x: Math.random() * canvas.width,
           y: Math.random() * canvas.height,
           radius: Math.random() * 1.5 + 0.5,
-          color: 'rgba(0, 191, 255, 0.5)',
-          baseColor: 'rgba(0, 191, 255, 0.5)',
-          highlightColor: 'rgba(0, 191, 255, 1)',
+          color: baseColor,
+          baseColor: baseColor,
+          highlightColor: highlightColor,
           speed: 2 + Math.random() * 0.5,
         });
       }
@@ -62,8 +80,8 @@ export default function AnimatedParticlesBackground() {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
       const gradientBg = ctx.createLinearGradient(0, 0, 0, canvas.height);
-      gradientBg.addColorStop(0, '#050e14');
-      gradientBg.addColorStop(1, '#0a192f');
+      gradientBg.addColorStop(0, bgTop);
+      gradientBg.addColorStop(1, bgBottom);
       ctx.fillStyle = gradientBg;
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
@@ -75,7 +93,10 @@ export default function AnimatedParticlesBackground() {
 
         if (distance < maxDistance) {
           const opacity = 1 - distance / maxDistance;
-          particle.color = `rgba(77, 213, 254, ${0.4 + opacity * 0.6})`;
+          particle.color = particle.highlightColor.replace(
+            '1)',
+            `${(0.4 + opacity * 0.6).toFixed(2)})`,
+          );
         } else {
           particle.color = particle.baseColor;
         }
@@ -96,7 +117,10 @@ export default function AnimatedParticlesBackground() {
             ctx.beginPath();
             ctx.moveTo(particle.x, particle.y);
             ctx.lineTo(other.x, other.y);
-            ctx.strokeStyle = `rgba(77, 213, 254, ${0.07 * (1 - dist / 80)})`;
+            ctx.strokeStyle = particle.color.replace(
+              /[\d.]+\)$/,
+              `${(0.07 * (1 - dist / 80)).toFixed(2)})`,
+            );
             ctx.stroke();
           }
         });
@@ -115,7 +139,7 @@ export default function AnimatedParticlesBackground() {
       window.removeEventListener('mousemove', handleMouseMove);
       cancelAnimationFrame(animationFrameId);
     };
-  }, []);
+  }, [theme]);
 
   return <canvas ref={canvasRef} className="absolute inset-0 z-0" />;
 }
