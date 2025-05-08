@@ -1,5 +1,5 @@
 import { axiosInstance } from '@/lib/instance';
-import { LoginData, LoginResponse, UserDataResponse } from '@/types/auth';
+import {LoginData, LoginResponse, SignupData, UserDataResponse} from '@/types/auth';
 
 export const authLoginRequest = async (
   loginData: LoginData,
@@ -14,6 +14,21 @@ export const authLoginRequest = async (
     .catch((err) => {
       errorCallback(err);
     });
+};
+
+export const authSignUpRequest = async (
+    signupData: SignupData,
+    callback: () => void,
+    errorCallback: () => void,
+) => {
+  axiosInstance
+      .post('/auth/signup', signupData)
+      .then((response) => {
+        callback();
+      })
+      .catch((err) => {
+        errorCallback();
+      });
 };
 
 export const getUserDataRequest = async (

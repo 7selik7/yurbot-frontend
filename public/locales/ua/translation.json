@@ -5,6 +5,7 @@
   "signup": "Зареєструватися",
   "auth": {
     "loginTitle": "Увійти",
+    "signupTitle": "Створити акаунт",
     "email": "Ел. пошта",
     "password": "Пароль",
     "login": "Увійти",

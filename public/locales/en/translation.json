@@ -5,6 +5,7 @@
   "signup": "Sign Up",
   "auth": {
     "loginTitle": "Log in",
+    "signupTitle": "Sign up",
     "email": "Email",
     "password": "Password",
     "login": "Log in",
