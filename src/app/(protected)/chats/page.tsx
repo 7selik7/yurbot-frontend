@@ -18,6 +18,7 @@ import { hasItems } from '@/utils/utils';
 import WelcomeBlock from '@/components/ui/WelcomeBlock';
 import { toCamelCase } from '@/utils/toCamelCase';
 import MessageTyping from '@/components/chat/MessageTyping';
+import ChatInput from '@/components/chat/ChatInput';
 
 export default function Chats() {
   const dispatch = useAppDispatch();
@@ -27,6 +28,7 @@ export default function Chats() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [messageValue, setMessageValue] = useState<string>('');
   const [botResponse, setBotResponse] = useState<string>('');
+  const [attachedFiles, setAttachedFiles] = useState<File[]>([]);
 
   const [nowGeneratingChatUuid, setNowGeneratingChatUuid] = useState<string | null>(null);
 
@@ -49,12 +51,24 @@ export default function Chats() {
     };
   };
 
-  const sendMessageAndUpdateTree = async (chatUuid: string, parentUuid: string, text: string) => {
-    const messageResponse = await sendMessageRequest({
-      chat_uuid: chatUuid,
-      parent_uuid: parentUuid,
-      text,
-    });
+  const sendMessageAndUpdateTree = async (
+    chatUuid: string,
+    parentUuid: string,
+    text: string,
+    files: File[],
+  ) => {
+    const formData = new FormData();
+
+    formData.append('text', text);
+    formData.append('chat_uuid', chatUuid);
+    formData.append('parent_uuid', parentUuid);
+
+    if (files.length > 0) {
+      files.forEach((file: File) => {
+        formData.append('files', file);
+      });
+    }
+    const messageResponse = await sendMessageRequest(formData);
     const newMessage = messageResponse.data.message;
 
     dispatch(addMessage(newMessage));
@@ -150,9 +164,11 @@ export default function Chats() {
 
   const handleSendClick = async (parentUuid?: string, text?: string) => {
     setMessageValue('');
+    setAttachedFiles([]);
     setIsMessageRequestsLoading(true);
 
     const messageText = text ?? messageValue;
+    const files = attachedFiles;
 
     let chatUuid: string;
     let parentToUse: string;
@@ -168,7 +184,12 @@ export default function Chats() {
       parentToUse = parentUuid ?? lastMessageUuid;
     }
 
-    const { message, answer } = await sendMessageAndUpdateTree(chatUuid, parentToUse, messageText);
+    const { message, answer } = await sendMessageAndUpdateTree(
+      chatUuid,
+      parentToUse,
+      messageText,
+      files,
+    );
 
     setIsMessageRequestsLoading(false);
     setIsAnswerPreparing(true);
@@ -240,6 +261,11 @@ export default function Chats() {
     }
   }, [messages, botResponse]);
 
+  useEffect(() => {
+    console.log(messages);
+    console.log(lastMessageUuid);
+  }, [lastMessageUuid]);
+
   return (
     <div className="flex w-full h-full bg-gray-100 p-0">
       <ChatsSidebar />
@@ -262,22 +288,14 @@ export default function Chats() {
           )}
           <div ref={scrollRef} className="w-full h-[1px]" />
         </div>
-        <div className="p-4 border-t border-gray-200 flex items-center gap-2">
-          <textarea
-            rows={2}
-            placeholder="Type your message..."
-            value={messageValue}
-            onChange={(e) => setMessageValue(e.target.value)}
-            className="w-full resize-none border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
-          <button
-            onClick={() => handleSendClick()}
-            className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition disabled:opacity-50"
-            disabled={!messageValue.trim()}
-          >
-            {isMessageRequestsLoading ? 'Sending...' : 'Send'}
-          </button>
-        </div>
+        <ChatInput
+          attachedFiles={attachedFiles}
+          setAttachedFiles={setAttachedFiles}
+          messageValue={messageValue}
+          isMessageRequestsLoading={isMessageRequestsLoading}
+          setMessageValue={setMessageValue}
+          handleSendClick={handleSendClick}
+        />
       </div>
     </div>
   );

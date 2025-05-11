@@ -8,6 +8,7 @@
     "signupTitle": "Створити акаунт",
     "email": "Ел. пошта",
     "password": "Пароль",
+    "confirmPassword": "Підтвердити пароль",
     "login": "Увійти",
     "loggingIn": "Вхід...",
     "loginFailed": "Не вдалося увійти",

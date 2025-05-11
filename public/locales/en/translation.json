@@ -8,6 +8,7 @@
     "signupTitle": "Sign up",
     "email": "Email",
     "password": "Password",
+    "confirmPassword": "Confirm Password",
     "login": "Log in",
     "loggingIn": "Logging in...",
     "loginFailed": "Login failed",

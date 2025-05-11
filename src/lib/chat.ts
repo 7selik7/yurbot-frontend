@@ -48,9 +48,13 @@ export const createChatRequest = async (createChatData: CreateChatData) => {
   }
 };
 
-export const sendMessageRequest = async (sendMessageData: SendMessageData) => {
+export const sendMessageRequest = async (formData: FormData) => {
   try {
-    return await axiosInstance.post<SendMessageResponse>(`/chats/send_message`, sendMessageData);
+    return await axiosInstance.post<SendMessageResponse>(`/chats/send_message`, formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
   } catch (e) {
     throw e;
   }
