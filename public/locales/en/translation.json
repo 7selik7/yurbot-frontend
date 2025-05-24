@@ -6,6 +6,9 @@
   "auth": {
     "loginTitle": "Log in",
     "signupTitle": "Sign up",
+    "forgotPasswordTitle": "Forgot password",
+    "forgotPasswordDescription": "Enter the email to which the account was registered",
+    "sending": "Wait",
     "email": "Email",
     "password": "Password",
     "confirmPassword": "Confirm Password",
@@ -15,6 +18,35 @@
     "agree1": "By signing up you agree to our",
     "privacy": "Privacy Policy",
     "terms": "Terms of Use",
-    "and": "and"
+    "and": "and",
+
+    "signUp": "Sign up",
+    "signingUp": "Signing up...",
+    "signupFailed": "Registration failed",
+    "registrationSent": "Registration confirmation sent!",
+    "checkEmailRegistration": "Please check your email for confirmation instructions",
+
+    "confirmRegistrationTitle": "Confirm registration",
+    "confirmRegistrationDescription": "Click the button below to confirm your registration",
+    "confirmRegistration": "Confirm registration",
+    "confirming": "Confirming...",
+    "registrationConfirmed": "Registration confirmed successfully!",
+    "confirmationFailed": "Confirmation failed. Please try again or request a new confirmation link",
+    "canLoginNow": "You can now log in with your credentials",
+    "goToLogin": "Go to login",
+
+    "resetPasswordTitle": "Reset password",
+    "resetPasswordDescription": "Please enter your new password",
+    "newPassword": "New password",
+    "updatePassword": "Update password",
+    "updating": "Updating...",
+    "passwordUpdated": "Password successfully updated!",
+    "backToLogin": "Back to login",
+    "tooManyResetRequests": "Too many password reset requests. Try again after 10 minutes.",
+    "resetLinkSent": "Password reset link sent!",
+    "checkEmail": "Check your email for reset instructions",
+    "invalidToken": "Invalid or expired link",
+    "requestNewLink": "Request new link",
+    "resetPasswordFailed": "Password reset failed. Please try again."
   }
 }

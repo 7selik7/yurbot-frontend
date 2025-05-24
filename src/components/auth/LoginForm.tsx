@@ -75,7 +75,9 @@ export default function LoginForm() {
           </Form>
         )}
       </Formik>
-
+      <a href="/reset-password" className="mt-2 text-purple-400 hover:underline">
+        {t('auth.forgotPasswordTitle')}
+      </a>
       <p className="text-xs text-gray-400 mt-6 text-center max-w-xs">
         {t('auth.agree1')}{' '}
         <a href="#" className="text-purple-400 hover:underline">

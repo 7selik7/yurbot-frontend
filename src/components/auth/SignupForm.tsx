@@ -17,6 +17,7 @@ export default function SignupForm() {
   const { t } = useTranslation();
   const router = useRouter();
   const [serverError, setServerError] = useState<string | null>(null);
+  const [registrationSent, setRegistrationSent] = useState(false);
 
   const handleSignup = async (
     values: SignupValues,
@@ -24,10 +25,22 @@ export default function SignupForm() {
   ) => {
     setServerError(null);
 
+    const host = window.location.origin;
+
     await authSignUpRequest(
-      values,
-      () => {},
-      () => {},
+      {
+        email: values.email,
+        password: values.password,
+        host: host,
+      },
+      () => {
+        setRegistrationSent(true);
+      },
+      (err) => {
+        const errMsg = (err as { message: string })?.message || t('auth.signupFailed');
+        setServerError(errMsg);
+        console.error('Signup error:', err);
+      },
     );
 
     setSubmitting(false);
@@ -37,60 +50,83 @@ export default function SignupForm() {
     <div className="relative z-10 flex flex-col items-center justify-center px-4 py-12 min-h-screen text-white">
       <h1 className="text-4xl font-bold mb-8">{t('auth.signupTitle')}</h1>
 
-      <Formik
-        initialValues={{ email: '', password: '', confirmPassword: '' }}
-        validationSchema={SignupSchema}
-        onSubmit={handleSignup}
-      >
-        {({ isSubmitting }) => (
-          <Form className="flex flex-col w-full max-w-xs gap-4">
-            <Field
-              type="email"
-              name="email"
-              placeholder={t('auth.email')}
-              className="p-3 rounded-xl bg-transparent border border-gray-500 text-white placeholder-gray-400 focus:outline-none"
-            />
-            <ErrorMessage name="email" component="div" className="text-sm text-red-400" />
+      {registrationSent ? (
+        <div className="flex flex-col w-full max-w-xs gap-4 text-center">
+          <div className="p-4 rounded-xl bg-green-600/20 border border-green-500">
+            <p>{t('auth.registrationSent')}</p>
+          </div>
+          <p className="text-gray-300">{t('auth.checkEmailRegistration')}</p>
+          <button
+            onClick={() => router.push('/login')}
+            className="bg-purple-600 hover:bg-purple-700 transition p-3 rounded-xl font-semibold"
+          >
+            {t('auth.goToLogin')}
+          </button>
+        </div>
+      ) : (
+        <>
+          <Formik
+            initialValues={{ email: '', password: '', confirmPassword: '' }}
+            validationSchema={SignupSchema}
+            onSubmit={handleSignup}
+          >
+            {({ isSubmitting }) => (
+              <Form className="flex flex-col w-full max-w-xs gap-4">
+                <Field
+                  type="email"
+                  name="email"
+                  placeholder={t('auth.email')}
+                  className="p-3 rounded-xl bg-transparent border border-gray-500 text-white placeholder-gray-400 focus:outline-none"
+                />
+                <ErrorMessage name="email" component="div" className="text-sm text-red-400" />
 
-            <Field
-              type="password"
-              name="password"
-              placeholder={t('auth.password')}
-              className="p-3 rounded-xl bg-transparent border border-gray-500 text-white placeholder-gray-400 focus:outline-none"
-            />
-            <ErrorMessage name="password" component="div" className="text-sm text-red-400" />
+                <Field
+                  type="password"
+                  name="password"
+                  placeholder={t('auth.password')}
+                  className="p-3 rounded-xl bg-transparent border border-gray-500 text-white placeholder-gray-400 focus:outline-none"
+                />
+                <ErrorMessage name="password" component="div" className="text-sm text-red-400" />
 
-            <Field
-              type="password"
-              name="confirmPassword"
-              placeholder={t('auth.confirmPassword')}
-              className="p-3 rounded-xl bg-transparent border border-gray-500 text-white placeholder-gray-400 focus:outline-none"
-            />
-            <ErrorMessage name="confirmPassword" component="div" className="text-sm text-red-400" />
+                <Field
+                  type="password"
+                  name="confirmPassword"
+                  placeholder={t('auth.confirmPassword')}
+                  className="p-3 rounded-xl bg-transparent border border-gray-500 text-white placeholder-gray-400 focus:outline-none"
+                />
+                <ErrorMessage
+                  name="confirmPassword"
+                  component="div"
+                  className="text-sm text-red-400"
+                />
 
-            <button
-              type="submit"
-              disabled={isSubmitting}
-              className="bg-purple-600 hover:bg-purple-700 transition p-3 rounded-xl font-semibold disabled:opacity-50"
-            >
-              {isSubmitting ? t('auth.signingUp') : t('auth.signUp')}
-            </button>
+                <button
+                  type="submit"
+                  disabled={isSubmitting}
+                  className="bg-purple-600 hover:bg-purple-700 transition p-3 rounded-xl font-semibold disabled:opacity-50"
+                >
+                  {isSubmitting ? t('auth.signingUp') : t('auth.signUp')}
+                </button>
 
-            {serverError && <div className="text-sm text-red-400 text-center">{serverError}</div>}
-          </Form>
-        )}
-      </Formik>
+                {serverError && (
+                  <div className="text-sm text-red-400 text-center">{serverError}</div>
+                )}
+              </Form>
+            )}
+          </Formik>
 
-      <p className="text-xs text-gray-400 mt-6 text-center max-w-xs">
-        {t('auth.agree1')}{' '}
-        <a href="#" className="text-purple-400 hover:underline">
-          {t('auth.privacy')}
-        </a>{' '}
-        {t('auth.and')}{' '}
-        <a href="#" className="text-purple-400 hover:underline">
-          {t('auth.terms')}
-        </a>
-      </p>
+          <p className="text-xs text-gray-400 mt-6 text-center max-w-xs">
+            {t('auth.agree1')}{' '}
+            <a href="#" className="text-purple-400 hover:underline">
+              {t('auth.privacy')}
+            </a>{' '}
+            {t('auth.and')}{' '}
+            <a href="#" className="text-purple-400 hover:underline">
+              {t('auth.terms')}
+            </a>
+          </p>
+        </>
+      )}
     </div>
   );
 }

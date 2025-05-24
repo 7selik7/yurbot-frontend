@@ -11,6 +11,16 @@ export interface LoginData {
 export interface SignupData {
   email: string;
   password: string;
+  host: string;
+}
+
+export interface ForgotPasswordData {
+  email: string;
+  host: string;
+}
+
+export interface ConfirmPasswordData {
+  new_password: string;
 }
 
 export interface UserDataResponse {
