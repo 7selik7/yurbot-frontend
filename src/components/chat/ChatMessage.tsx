@@ -67,6 +67,26 @@ const ChatMessage: React.FC<IChatMessageProps> = ({
           <Markdown>{message.text}</Markdown>
         )}
 
+        {message.documents && message.documents.length > 0 && (
+          <div className="flex flex-col gap-2 mt-2">
+            <div className="text-sm font-semibold text-gray-600">Прикріплені файли:</div>
+            <div className="flex flex-wrap gap-2">
+              {message.documents.map((doc) => (
+                <a
+                  key={doc.uuid}
+                  href={doc.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="px-3 py-2 bg-gray-100 text-gray-700 rounded-lg text-sm hover:bg-gray-200 transition border border-gray-300"
+                  title={`Файл: ${doc.name}\nТип: ${doc.mimeType}\nРозмір: ${doc.size} байт`}
+                >
+                  📄 {doc.name}
+                </a>
+              ))}
+            </div>
+          </div>
+        )}
+
         {isEditing ? (
           <div className="flex flex-row gap-2 mt-2">
             <button

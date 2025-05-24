@@ -1,3 +1,5 @@
+import { Document } from '@/types/document';
+
 export enum MarkType {
   LIKE = 'like',
   DISLIKE = 'dislike',
@@ -12,6 +14,7 @@ export interface Message {
   parentUuid: string | null;
   chatUuid: string;
   children: string[];
+  documents: Document[];
   createdAt: string;
   updatedAt: string;
 }
